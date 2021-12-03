@@ -1,12 +1,26 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv').config()
+const pwdFormat = require('password-validator');//added now
+var pwdSchema = new pwdFormat();//added now
+
+pwdSchema
+.is().min(8)                                    // Minimun lenght: 8
+.has().uppercase()                              // Must have uppercase letters
+.has().lowercase()                              // Must have lowercase letters
+.has().digits()                                 // Must have at least a digit
+.has().not().spaces()                           // Should not have spaces
+.is().not().oneOf(['Passw0rd', 'Password123']); // Values blacklisted
 
 
 const User = require('../models/User');
 
 // Inscription 
 exports.signup = (req, res, next) => {
+
+  if(!pwdSchema.validate(req.body.password)){//just added
+    return res.status(400).json({message: "low security of password! " + pwdSchema.validate(req.body.password, {list:true})})//just added
+  }
     bcrypt.hash(req.body.password, 10)
       .then(hash => {
         const user = new User({

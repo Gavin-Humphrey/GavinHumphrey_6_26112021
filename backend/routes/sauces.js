@@ -18,6 +18,11 @@ const saucesCtrl = require('../controllers/sauces');
 // En exportant dans le controller la logique métier, les fonctions, on voit plus clairement quelles sont les routes dont on dispose
 // et on utilisera une sémantique très claire pour comprendre ce qu'elles permettent.
 // On a quelque chose de plus modulaire plus facile à comprendre et plus facile à maintenir
-
+/*router.get('/', auth, saucesCtrl.getAllSauces);
+router.get('/:id', auth, saucesCtrl.getOneSauce);
+router.post('/', auth, multer, saucesCtrl.newSauce);
+router.put('/:id', auth, multer, saucesCtrl.updateSauce);
+router.delete('/:id', auth, saucesCtrl.deleteSauce);
+router.post('/:id/like', auth, saucesCtrl.likeDislike);*/
 
 module.exports = router;
