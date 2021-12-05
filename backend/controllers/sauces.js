@@ -1,9 +1,8 @@
-const Sauce = require('../models/sauces');
-const fs = require('fs');
-//const sauces = require('../models/sauces');
+const Sauce = require('../models/Sauces');
+const fs = require('fs');//On emporte le file system (fs) pour la supression d'objet
 
 // Afficher toutes les sauces 
-exports.getAllSauce = (req, res, next) => {
+exports.getAllSauces = (req, res, next) => {
     Sauce.find()
     .then(sauce => res.status(200).json(sauce))
     .catch(error => res.status(400).json({ error }));

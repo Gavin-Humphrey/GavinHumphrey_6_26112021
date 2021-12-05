@@ -17,11 +17,11 @@ const saucesRoutes = require('./routes/sauces');
 //creation de la variable qui créée l'application EXPRESS & Helmet pour sécuriser les données
 const app = express();
 app.use(helmet());
+const nocache = require("nocache");
 
 mongoose.connect(process.env.SECRET_DB_USERS,
   {
     useNewUrlParser: true,
-    //useCreateIndex: true, //This made mongodb not to work
     useUnifiedTopology: true
   })
   .then(() => console.log('Connexion à MongoDB réussie !'))
@@ -40,8 +40,11 @@ app.use((req, res, next) => {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true}));
 
-  //permet de récupérer les images
+  //Le dossier static qui permet de récupérer les images
 app.use("/images", express.static(path.join(__dirname, "images")));
+
+//Ce middleware Express définit des headers de réponse HTTP pour désactiver la mise en cache côté client. 
+app.use(nocache());
 
 app.use(cors());
 
