@@ -2,13 +2,12 @@
 const mongoose = require('mongoose');
 const express = require("express");
 const helmet = require('helmet');
+const session = require('express-session');
 const cors = require("cors");
 const path = require("path"); //import de path pour MAJ du chemin d'upload photo
 require('dotenv').config();
-
-//Just added for testing
 const bodyParser = require('body-parser'); // Permet d'extraire l'objet JSON des requêtes POST
-
+const nocache = require("nocache");
 
 //import des fichiers JS du dossier ROUTES
 const userRoutes = require('./routes/user');
@@ -17,7 +16,7 @@ const saucesRoutes = require('./routes/sauces');
 //creation de la variable qui créée l'application EXPRESS & Helmet pour sécuriser les données
 const app = express();
 app.use(helmet());
-const nocache = require("nocache");
+
 
 mongoose.connect(process.env.SECRET_DB_USERS,
   {
@@ -35,12 +34,25 @@ app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
     next();
   });
-  
-  //ajout du middleware qui donne le format de ce bodyParser
-  app.use(express.json());
-  app.use(express.urlencoded({ extended: true}));
 
-  //Le dossier static qui permet de récupérer les images
+//Définissez des options de cookie pour accroître la sécurité
+const expiryDate = new Date( Date.now() + 60 * 60 * 1000 ); // 1 hour
+app.use(session({
+  name:  'session',
+  secret: process.env.SESSION_SECRET,
+  cookie: { secure: true,
+            httpOnly: true,
+            domain: 'http://localhost:3000',
+            expires: expiryDate
+          }
+  })
+);
+  
+//ajout du middleware qui donne le format de ce bodyParser
+app.use(express.json());
+app.use(express.urlencoded({ extended: true}));
+
+//Le dossier static qui permet de récupérer les images
 app.use("/images", express.static(path.join(__dirname, "images")));
 
 //Ce middleware Express définit des headers de réponse HTTP pour désactiver la mise en cache côté client. 
