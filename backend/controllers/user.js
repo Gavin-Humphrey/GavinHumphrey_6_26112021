@@ -7,12 +7,12 @@ const pwdFormat = require('password-validator');
 var pwdSchema = new pwdFormat();
 
 pwdSchema
-.is().min(8)                                    // Minimun lenght: 8
-.has().uppercase()                              // Must have uppercase letters
-.has().lowercase()                              // Must have lowercase letters
-.has().digits()                                 // Must have at least a digit
-.has().not().spaces()                           // Should not have spaces
-.is().not().oneOf(['Passw0rd', 'Password123']); // Values blacklisted
+.is().min(8)                                    // Longueur minimun : 8
+.has().uppercase()                              // Doit avoir au moins une majuscule
+.has().lowercase()                              // Doit avoir au moins une minuscule
+.has().digits()                                 // Doit avoir au moins un chiffre
+.has().not().spaces()                           // Ne doit pas avoir d'espaces
+.is().not().oneOf(['Passw0rd', 'Password123']); // Blacklist de valeurs à proscrire
 
 // On récupère notre model User ,créer avec le schéma mongoose
 const User = require('../models/User');
