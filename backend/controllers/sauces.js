@@ -74,36 +74,47 @@ exports.deleteSauce = (req, res, next) => {
       .catch(error => res.status(500).json({ error }));
   };
 
+
 // Aimer ou ne pas aimer une sauce 
 exports.likeOrDislike = (req, res, next) => {
-    // Si il s'agit d'un like
-    if(req.body.like === 1){
-         // On push l'utilisateur et on incrémente le compteur de 1
-        Sauce.updateOne({ _id: req.params.id },  {$inc: {likes: req.body.like++} ,$push: {usersLiked: req.body.userId}})
-        .then ((sauce)=> res.status(200).json({ message: 'Like ajouté !'}))
-        .catch(error => res.status(400).json({ error }));
-        // S'il s'agit d'un dislike
-    } else if (req.body.like === -1){
-        // On push l'utilisateur et on incrémente le compteur de 1
-        Sauce.updateOne({ _id: req.params.id },  {$inc: {dislikes: (req.body.like++)*-1} ,$push: {usersDisliked: req.body.userId}})
-        .then ((Sauce)=> res.status(200).json({ message: 'Dislike ajouté !'}))
-        .catch(error => res.status(400).json({ error }));
-    } else{
-        
-        Sauce.findOne({_id: req.params.id})
-            .then(sauce => {
-                // Si il s'agit d'annuler un like
-                if (sauce.usersLiked.includes(req.body.userId)) {
-                    Sauce.updateOne({_id: req.params.id}, {$pull: {usersLiked: req.body.userId}, $inc: {likes: -1}})
-                    .then((sauce) => {res.status(200).json({ message: 'Like en moins !'})}) 
-                    .catch(error => res.status(400).json({ error }))
-                    // Si il s'agit d'annuler un dislike
-                } else if (sauce.usersDisliked.includes(req.body.userId)) {
-                    Sauce.updateOne({_id: req.params.id}, {$pull: {usersDisliked: req.body.userId}, $inc: {dislikes: -1}})
-                    .then((sauce) => {res.status(200).json({ message: 'Dislike en moins !'})}) 
-                    .catch(error => res.status(400).json({ error }))  
-                }
-            })
-            .catch(error => res.status(400).json({ error }));
+    // Like présent dans le body
+    let like = req.body.like
+    // On utilise le userID
+    let userId = req.body.userId
+    // On utilise l'id de la sauce
+    let sauceId = req.params.id
+
+  //Si l'utilisateur aime la sauce, On utilise push pour augmenter le compteur de Liked de 1 
+    if (like === 1) { 
+      Sauce.updateOne({ _id: sauceId }, { $push: { usersLiked: userId }, $inc: { likes: +1 }, })
+        .then(() => res.status(200).json({ message: 'Like ajouté !'}))
+        .catch((error) => res.status(400).json({
+          error
+        }))
     }
-};
+    // Si l'utilisateur n'aime pas la sauce, on utilise push pour augmenter le compteur Disliked de 1 
+    if (like === -1) {
+      Sauce.updateOne({ _id: sauceId }, { $push: { usersDisliked: userId }, $inc: { dislikes: +1}, })
+        .then(() => { res.status(200).json({ message: 'Dislike ajouté !' })})
+        .catch((error) => res.status(400).json({ error }))}
+
+    // Si il s'agit d'annuler un Liked ou un Disliked
+    if (like === 0) { 
+      Sauce.findOne({ _id: sauceId })
+        .then((sauce) => {
+            // Si l'utilisateur souhaite anuler une sauce Liked, on utilise pull pour supprimer le compteur Liked de -1 
+          if (sauce.usersLiked.includes(userId)) { 
+            Sauce.updateOne({ _id: sauceId }, { $pull: { usersLiked: userId }, $inc: { likes: -1 }, })
+              .then(() => res.status(200).json({ message: 'Like en moins !' }))
+              .catch((error) => res.status(400).json({ error }))}
+              // Si l'utilisateur souhaite anuler une sauce Disliked, on utilise pull pour supprimer le compteur Disliked de -1
+          if (sauce.usersDisliked.includes(userId)) { 
+            Sauce.updateOne({ _id: sauceId }, { $pull: { usersDisliked: userId }, $inc: { dislikes: -1 }, })
+              .then(() => res.status(200).json({ message: 'Dislike en moins !' }))
+              .catch((error) => res.status(400).json({ error }))}
+        })
+        .catch((error) => res.status(404).json({
+          error
+        }))
+    }
+}

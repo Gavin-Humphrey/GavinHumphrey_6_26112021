@@ -1,9 +1,10 @@
 
-//On utilise la fonctionne require pour importer des requets http
+// On utilise la fonctionne require pour importer des requets http
 const http = require('http');
-const app = require('./app');//importer l'appli express que nous avons exporter dans app.js
-
-const normalizePort = val => { //Comme un validateur qui vérifie le port si c'est en numérique ou texte
+// importer l'appli express que nous avons exporter dans app.js
+const app = require('./app');
+// Comme un validateur qui vérifie le port si c'est en numérique ou texte
+const normalizePort = val => { 
   const port = parseInt(val, 10);
 
   if (isNaN(port)) {
@@ -14,10 +15,10 @@ const normalizePort = val => { //Comme un validateur qui vérifie le port si c'e
   }
   return false;
 };
-//pour verifie si la 3000 exists sinon qu'il prend nimporte quelle port
+// pour verifie si la 3000 exists sinon qu'il prend nimporte quelle port
 const port = normalizePort(process.env.PORT || '3000');
-app.set('port', port);// indiquer quelle port express doit utiliser
-
+// indiquer quelle port express doit utiliser
+app.set('port', port);
 const errorHandler = error => {
   if (error.syscall !== 'listen') {
     throw error;
@@ -39,7 +40,7 @@ const errorHandler = error => {
 };
 // Sert a recuperer automatiquement les commands d'app.js
 const server = http.createServer(app);
-//pour ecouter l'adresse de port s'il y a une erreur
+// pour ecouter l'adresse de port s'il y a une erreur
 server.on('error', errorHandler);
 server.on('listening', () => {
   const address = server.address();
