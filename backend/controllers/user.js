@@ -12,7 +12,8 @@ pwdSchema
 .has().lowercase()                              // Doit avoir au moins une minuscule
 .has().digits()                                 // Doit avoir au moins un chiffre
 .has().not().spaces()                           // Ne doit pas avoir d'espaces
-.is().not().oneOf(['Passw0rd', 'Password123']); // Blacklist de valeurs à proscrire
+.is().not().oneOf(['Passw0rd', 'Password123', 'Azerty123']); // Blacklist de valeurs à proscrire
+
 
 // On récupère notre model User ,créer avec le schéma mongoose
 const User = require('../models/User');

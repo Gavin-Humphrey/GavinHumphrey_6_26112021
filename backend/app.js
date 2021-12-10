@@ -44,7 +44,10 @@ app.use(session({
             httpOnly: true,
             domain: 'http://localhost:3000',
             expires: expiryDate
-          }
+          },
+  resave: false,
+  saveUninitialized: true,
+
   })
 );
   
