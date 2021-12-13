@@ -1,4 +1,3 @@
-
 // On utilise la fonctionne require pour importer des requets http
 const http = require('http');
 // importer l'appli express que nous avons exporter dans app.js
@@ -15,8 +14,8 @@ const normalizePort = val => {
   }
   return false;
 };
-// pour verifie si la 3000 exists sinon qu'il prend nimporte quelle port
-const port = normalizePort(process.env.PORT || '3000');
+// le serveur doit vérifier si le 3000 existe sinon qu'il prend une variable d'environnement
+const port = normalizePort(process.env.PORT || '3000');
 // indiquer quelle port express doit utiliser
 app.set('port', port);
 const errorHandler = error => {

@@ -20,6 +20,8 @@ exports.createSauce = (req, res, next) => {
     //Les données de la requête envoyées par le front-end sous forme de form-data
     // sont stockées dans une variable qui est analysée en objet utilisable à l'aide de JSON.parse(). 
     const sauceObject = JSON.parse(req.body.sauce);
+     /* On supprime l'id généré automatiquement et envoyé par le front-end. 
+     L'id de la sauce est créé par la base MongoDB lors de la création dans la base */
     delete sauceObject._id;
     const sauce = new Sauce({
         ...sauceObject,
